@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M7 – Dove Fa Male? Ergonomia e Lavoro Ripetitivo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a237e,#283593,#303f9f);min-height:100vh;overflow:hidden;display:flex;justify-content:center;align-items:center}
+.container{background:#fff;width:800px;height:550px;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.header{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#1a237e}.btn-white:hover{background:#e8eaf6}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.hidden{display:none!important}
+
+/* ISTRUZIONI */
+.instr{padding:18px 24px;overflow-y:auto;flex:1}
+.instr h2{color:#1a237e;font-size:16px;margin-bottom:10px}
+.instr p,.instr li{font-size:13px;line-height:1.6;color:#444;margin-bottom:5px}
+.instr ul{margin-left:18px;margin-bottom:10px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#e8eaf6;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#1a237e;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.start-btn{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:11px 32px;font-size:14px;border-radius:8px;display:block;margin:14px auto 0;cursor:pointer;border:none;font-weight:600}
+.start-btn:hover{transform:translateY(-2px)}
+
+/* GAME LAYOUT */
+.game-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:10px 14px;gap:8px}
+.progress-row{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.prog-bar{flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#1a237e,#7986cb);border-radius:3px;transition:width .4s}
+.score-badge{background:#283593;color:#fff;border-radius:20px;padding:2px 12px;font-size:12px;font-weight:700}
+.prog-label{font-size:12px;color:#555;font-weight:600}
+
+.game-body{flex:1;display:flex;gap:12px;min-height:0;overflow:hidden}
+
+/* LEFT PANEL */
+.left-panel{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+
+.question-box{background:#e8eaf6;border-left:4px solid #3949ab;border-radius:8px;padding:10px 12px;flex-shrink:0}
+.mansione-tag{display:inline-block;background:#3949ab;color:#fff;border-radius:4px;padding:1px 8px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:5px}
+.question-text{font-size:12px;font-weight:600;color:#1a237e;line-height:1.5}
+
+.zones-list{display:flex;flex-direction:column;gap:6px;flex:1;justify-content:center}
+.zone-btn{background:#fff;border:2px solid #c5cae9;border-radius:8px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;font-family:'Segoe UI',sans-serif;text-align:left}
+.zone-btn:hover:not(:disabled){border-color:#3949ab;background:#e8eaf6;transform:translateX(3px)}
+.zone-btn:disabled{cursor:not-allowed}
+.zone-num{width:22px;height:22px;border-radius:50%;background:#3949ab;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.zone-label{font-size:12px;font-weight:600;color:#333}
+.zone-btn.correct{border-color:#2e7d32;background:#e8f5e9}
+.zone-btn.correct .zone-num{background:#2e7d32}
+.zone-btn.correct .zone-label{color:#1b5e20}
+.zone-btn.wrong{border-color:#c62828;background:#ffebee}
+.zone-btn.wrong .zone-num{background:#c62828}
+.zone-btn.wrong .zone-label{color:#b71c1c}
+.zone-btn.reveal{border-color:#2e7d32;background:#e8f5e9;opacity:.75}
+.zone-btn.reveal .zone-num{background:#2e7d32}
+
+.feedback-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:6px;padding:8px 10px;font-size:11px;color:#0d47a1;line-height:1.5;flex-shrink:0;display:none}
+.feedback-box.show{display:block}
+
+.next-btn{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:7px 18px;font-size:12px;border-radius:7px;display:none;cursor:pointer;border:none;font-weight:600;align-self:flex-end;flex-shrink:0}
+.next-btn.show{display:block}
+
+/* RIGHT PANEL – body image with hotspots */
+.body-panel{width:180px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
+.body-img{height:100%;max-height:380px;width:auto;display:block;object-fit:contain;user-select:none;pointer-events:none}
+
+/* HOTSPOT ZONES — positioned as % of image container */
+.hspot{position:absolute;border-radius:50%;border:2.5px dashed #3949ab;background:rgba(57,73,171,.12);cursor:default;display:flex;align-items:center;justify-content:center;transition:all .3s;pointer-events:none}
+.hspot .hspot-num{font-size:11px;font-weight:700;color:#3949ab;background:rgba(255,255,255,.85);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center}
+.hspot.correct{border-color:#2e7d32;background:rgba(46,125,50,.25);border-style:solid;animation:pop .3s ease}
+.hspot.correct .hspot-num{color:#1b5e20;background:rgba(232,245,233,.95)}
+.hspot.wrong{border-color:#c62828;background:rgba(198,40,40,.2);border-style:solid}
+.hspot.wrong .hspot-num{color:#b71c1c;background:rgba(255,235,238,.95)}
+.hspot.reveal{border-color:#2e7d32;background:rgba(46,125,50,.2);border-style:solid}
+.hspot.reveal .hspot-num{color:#1b5e20}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(0)}60%{transform:translate(-50%,-50%) scale(1.3)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+/* RESULT */
+.result-page{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+.result-box{text-align:center;max-width:480px}
+.result-icon{font-size:55px;margin-bottom:12px}
+.result-box h2{font-size:20px;font-weight:700;color:#1a237e;margin-bottom:8px}
+.result-box p{font-size:13px;color:#555;line-height:1.6;margin-bottom:15px}
+.result-score{background:#e8eaf6;border-radius:10px;padding:10px 20px;font-size:15px;font-weight:700;color:#1a237e;margin-bottom:15px;display:inline-block}
+.result-btns{display:flex;gap:10px;justify-content:center}
+.btn-prim{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;cursor:pointer;border:none;font-weight:600}
+.btn-sec{background:#78909c;color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;cursor:pointer;border:none;font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>🦴 Dove Fa Male? Riconosci il Sovraccarico</h1>
+      <p>Modulo 7 – Ergonomia e lavoro ripetitivo</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">🔄 Ricomincia</button>
+      <button class="btn-white" onclick="window.close()">✕ Esci</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- ISTRUZIONI -->
+    <div id="instrPage" class="instr">
+      <h2>🎯 Come funziona</h2>
+      <p>Ti vengono descritte <strong>8 situazioni lavorative reali</strong>. Per ciascuna devi identificare quale zona del corpo viene sovraccaricata cliccando il nome corretto a sinistra. Sul corpo a destra trovi le 5 zone numerate evidenziate.</p>
+      <div class="how-grid">
+        <div class="how-step"><span class="num">📖</span>Leggi la situazione e la mansione</div>
+        <div class="how-step"><span class="num">👆</span>Clicca il nome della zona sovraccaricata</div>
+        <div class="how-step"><span class="num">🦴</span>La zona si illumina sul corpo a destra</div>
+      </div>
+      <ul>
+        <li>Le 5 zone numerate sul corpo sono sempre visibili come riferimento</li>
+        <li>Verde = corretto · Rosso = sbagliato, si rivela la zona giusta</li>
+      </ul>
+      <button class="start-btn" onclick="startGame()">▶ Inizia</button>
+    </div>
+
+    <!-- GIOCO -->
+    <div id="gamePage" class="game-wrap hidden">
+      <div class="progress-row">
+        <span class="score-badge">Domanda <span id="curNum">1</span>/8</span>
+        <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        <span class="prog-label">Corrette: <span id="scoreNum">0</span></span>
+      </div>
+
+      <div class="game-body">
+
+        <!-- SINISTRA: domanda + bottoni zone -->
+        <div class="left-panel">
+          <div class="question-box">
+            <div class="mansione-tag" id="mansioneTag"></div>
+            <div class="question-text" id="questionText"></div>
+          </div>
+          <div class="zones-list" id="zonesList"></div>
+          <div class="feedback-box" id="feedbackBox"></div>
+          <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Domanda successiva →</button>
+        </div>
+
+        <!-- DESTRA: corpo con hotspot numerati -->
+        <div class="body-panel" id="bodyPanel">
+          <img src="images/human-body.jpg" alt="Corpo umano" class="body-img" id="bodyImg">
+          <!-- hotspot 1: collo -->
+          <div class="hspot" id="hs-collo"    style="top:18%;left:53%;width:50px;height:24px;transform:translate(-50%,-50%)"><div class="hspot-num">1</div></div>
+          <!-- hotspot 2: spalle -->
+          <div class="hspot" id="hs-spalle"   style="top:24%;left:53%;width:80px;height:30px;transform:translate(-50%,-50%);border-radius:18px"><div class="hspot-num">2</div></div>
+          <!-- hotspot 3: schiena bassa -->
+          <div class="hspot" id="hs-schiena"  style="top:37%;left:53%;width:50px;height:40px;transform:translate(-50%,-50%);border-radius:20px"><div class="hspot-num">3</div></div>
+          <!-- hotspot 4: polso sx -->
+          <div class="hspot" id="hs-polso"    style="top:41%;left:8%;width:32px;height:32px;transform:translate(-50%,-50%)"><div class="hspot-num">4</div></div>
+          <!-- hotspot 5: ginocchia -->
+          <div class="hspot" id="hs-ginocchia" style="top:60%;left:53%;width:60px;height:36px;transform:translate(-50%,-50%);border-radius:18px"><div class="hspot-num">5</div></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RISULTATO -->
+    <div id="resultPage" class="result-page hidden">
+      <div class="result-box">
+        <div class="result-icon" id="resultIcon"></div>
+        <h2 id="resultTitle"></h2>
+        <p id="resultText"></p>
+        <div class="result-score" id="resultScore"></div>
+        <div class="result-btns">
+          <button class="btn-prim" onclick="resetGame()">🔄 Rigioca</button>
+          <button class="btn-sec" onclick="window.close()">Torna al corso</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const ZONES = [
+  {id:'collo',    num:1, label:'1 – Collo'},
+  {id:'spalle',   num:2, label:'2 – Spalle'},
+  {id:'schiena',  num:3, label:'3 – Schiena bassa'},
+  {id:'polso',    num:4, label:'4 – Polso e mano'},
+  {id:'ginocchia',num:5, label:'5 – Ginocchia'},
+];
+
+const QUESTIONS = [
+  {
+    mansione:'🛒 Cassiere – Monitor di lato',
+    question:'Il monitor della cassa è posizionato lateralmente. Il cassiere tiene la testa ruotata per ore durante il turno. Quale zona viene sovraccaricata?',
+    correct:'collo',
+    feedback:'La rotazione prolungata del collo comprime i dischi cervicali in modo asimmetrico. Il monitor deve essere posizionato di fronte, con lo sguardo che cade naturalmente al centro dello schermo.'
+  },
+  {
+    mansione:'🛒 Cassiere – Scanning prodotti',
+    question:'Il cassiere esegue centinaia di passaggi al scanner per turno: rotazione del polso, flessione delle dita, presa costante. Quale zona accumula il maggior sovraccarico?',
+    correct:'polso',
+    feedback:'Lo scanning ripetuto affatica i tendini del polso e della mano. Il segnale precoce è il formicolio alle dita di notte: può indicare la sindrome del tunnel carpale. Movimenti fluidi e presa leggera riducono il sovraccarico.'
+  },
+  {
+    mansione:'🏪 Addetto scaffali – Scaffali bassi',
+    question:'L\'addetto rifornisce lo scaffale a livello del pavimento piegandosi in avanti con le gambe dritte e la schiena curva per 30 minuti. Quale zona viene danneggiata?',
+    correct:'schiena',
+    feedback:'Piegarsi in avanti con le gambe dritte è la postura più dannosa per i dischi lombari. La postura corretta è inginocchiarsi su un ginocchio con la schiena dritta.'
+  },
+  {
+    mansione:'🏪 Addetto scaffali – Scaffali alti',
+    question:'L\'addetto posiziona prodotti sugli scaffali sopra la testa tenendo il braccio sollevato a lungo mentre cerca il punto esatto. Quale struttura viene sovraccaricata?',
+    correct:'spalle',
+    feedback:'Tenere il braccio elevato per più di qualche secondo affatica la cuffia dei rotatori. La tecnica corretta: sollevare, posizionare subito e abbassare il braccio. Non cercare il punto con il braccio già in quota.'
+  },
+  {
+    mansione:'🏪 Addetto scaffali – Scaffali bassi prolungati',
+    question:'L\'addetto lavora inginocchiato sullo stesso ginocchio per un\'ora intera senza mai alternare il lato. Quale zona viene sovraccaricata?',
+    correct:'ginocchia',
+    feedback:'Inginocchiarsi è corretto per gli scaffali bassi, ma occorre alternare il ginocchio regolarmente. Usare un tappetino su pavimenti duri. Sovraccaricare sempre la stessa articolazione causa infiammazione nel tempo.'
+  },
+  {
+    mansione:'🔪 Banco gastronomia – Servizio',
+    question:'L\'addetto prende prodotti dal bancone e li porta al piano di affettatura laterale ruotando il busto senza spostare i piedi, decine di volte per turno. Quale zona viene sovraccaricata?',
+    correct:'schiena',
+    feedback:'La torsione del busto sotto carico è una delle cause principali di ernia del disco. La soluzione è spostare i piedi nella direzione in cui si vuole depositare il prodotto.'
+  },
+  {
+    mansione:'🏪 Addetto scaffali – Senza scaletta',
+    question:'L\'addetto lavora sugli scaffali più alti senza scaletta, con il collo esteso all\'indietro per vedere quello che fa. Quale struttura viene compressa?',
+    correct:'collo',
+    feedback:'L\'iperestensione prolungata del collo comprime i dischi cervicali posteriori. La scaletta porta il livello di lavoro all\'altezza degli occhi, eliminando questo rischio.'
+  },
+  {
+    mansione:'🛒 Cassiere – Sedile mal regolato',
+    question:'Il cassiere lavora tutto il turno con il sedile troppo alto: i piedi non poggiano a terra e lo schienale non raggiunge la zona lombare. Quale zona accumula più fatica?',
+    correct:'schiena',
+    feedback:'Senza supporto lombare i muscoli paravertebrali lavorano continuamente senza recupero. Il sedile va regolato ogni turno: piedi piatti a terra, ginocchia a 90°, schienale a contatto con la schiena bassa.'
+  },
+];
+
+let cur=0, score=0, shuffled=[];
+
+function startGame(){
+  cur=0; score=0;
+  shuffled=[...QUESTIONS].sort(()=>Math.random()-.5);
+  document.getElementById('scoreNum').textContent='0';
+  loadQuestion();
+  showPage('gamePage');
+}
+
+function resetHotspots(){
+  ZONES.forEach(z=>{
+    const hs=document.getElementById('hs-'+z.id);
+    if(hs){hs.classList.remove('correct','wrong','reveal');}
+  });
+}
+
+function loadQuestion(){
+  if(cur>=QUESTIONS.length){endGame();return;}
+  const q=shuffled[cur];
+  document.getElementById('curNum').textContent=cur+1;
+  document.getElementById('progFill').style.width=((cur/QUESTIONS.length)*100)+'%';
+  document.getElementById('mansioneTag').textContent=q.mansione;
+  document.getElementById('questionText').textContent=q.question;
+  document.getElementById('feedbackBox').className='feedback-box';
+  document.getElementById('nextBtn').className='next-btn';
+  resetHotspots();
+
+  const list=document.getElementById('zonesList');
+  list.innerHTML='';
+  // shuffle zones order
+  [...ZONES].sort(()=>Math.random()-.5).forEach(z=>{
+    const btn=document.createElement('button');
+    btn.className='zone-btn';
+    btn.innerHTML=`<span class="zone-num">${z.num}</span><span class="zone-label">${z.label}</span>`;
+    btn.onclick=()=>answer(z.id, btn, q);
+    list.appendChild(btn);
+  });
+}
+
+function answer(zoneId, el, q){
+  document.querySelectorAll('.zone-btn').forEach(b=>b.disabled=true);
+  const isCorrect=zoneId===q.correct;
+
+  if(isCorrect){
+    score++;
+    document.getElementById('scoreNum').textContent=score;
+    el.classList.add('correct');
+    document.getElementById('hs-'+zoneId)?.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('hs-'+zoneId)?.classList.add('wrong');
+    // reveal correct
+    document.querySelectorAll('.zone-btn').forEach(b=>{
+      const numEl=b.querySelector('.zone-num');
+      const zone=ZONES.find(z=>z.num===parseInt(numEl?.textContent));
+      if(zone&&zone.id===q.correct){b.classList.add('reveal');}
+    });
+    document.getElementById('hs-'+q.correct)?.classList.add('reveal');
+  }
+
+  const fb=document.getElementById('feedbackBox');
+  fb.innerHTML='<b>'+(isCorrect?'✓ Corretto!':'✗ Non corretto.')+'</b> '+q.feedback;
+  fb.classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQuestion(){cur++;loadQuestion();}
+
+function endGame(){
+  const pct=Math.round((score/QUESTIONS.length)*100);
+  document.getElementById('resultIcon').textContent=pct>=75?'🎉':pct>=50?'👍':'💪';
+  document.getElementById('resultTitle').textContent=pct>=75?'Ottima conoscenza!':pct>=50?'Buona base!':'Riprova!';
+  document.getElementById('resultText').textContent='Riconoscere quale zona del corpo viene sovraccaricata da ogni mansione è il primo passo per cambiare il comportamento in tempo. I segnali precoci vanno segnalati al responsabile e al medico competente senza aspettare che diventino cronici.';
+  document.getElementById('resultScore').textContent='Risposte corrette: '+score+'/'+QUESTIONS.length;
+  showPage('resultPage');
+}
+
+function resetGame(){showPage('instrPage');}
+function showPage(id){
+  ['instrPage','gamePage','resultPage'].forEach(p=>document.getElementById(p).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+</script>
+</body>
+</html>
